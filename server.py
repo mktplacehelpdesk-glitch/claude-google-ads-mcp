@@ -1,12 +1,29 @@
 import os
-from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
+from fastmcp.server.auth.providers.google import GoogleProvider
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
 
+BASE_URL = os.environ["BASE_URL"]
+
+auth = GoogleProvider(
+    client_id=os.environ["MCP_GOOGLE_CLIENT_ID"],
+    client_secret=os.environ["MCP_GOOGLE_CLIENT_SECRET"],
+    base_url=BASE_URL,
+    required_scopes=[
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+    ],
+    allowed_client_redirect_uris=[
+        "https://claude.ai/api/mcp/auth_callback",
+    ],
+    jwt_signing_key=os.environ["FASTMCP_JWT_SIGNING_KEY"],
+)
+
 mcp = FastMCP(
     "Google Ads MCP",
-    stateless_http=True,
-    json_response=True
+    auth=auth,
+    json_response=True,
 )
 
 
