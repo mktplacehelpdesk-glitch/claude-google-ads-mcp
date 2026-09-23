@@ -1,0 +1,4 @@
+mcp
+google-ads
+python-dotenv
+uvicorn
